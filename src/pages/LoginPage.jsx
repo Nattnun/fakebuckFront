@@ -9,7 +9,6 @@ export default function LoginPage() {
       <LoginForm />
       <hr className="my-6" />
       <RegisterContainer />
-      <Modal />
     </div>
   );
 }
