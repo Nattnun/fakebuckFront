@@ -1,13 +1,21 @@
 import React, { useState } from "react";
 import Input from "../../../components/Input";
 import Button from "../../../components/Button";
+import registerSchema from "../validations/validate-register";
 
 export default function RegisterForm({ onSuccess }) {
-  const [input, setInput] = useState({ firstName: "john" });
+  const [input, setInput] = useState({});
+  const [error, setError] = useState({
+    firstName: "pls fill your first name",
+  });
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    onSuccess();
+    const { value, error } = registerSchema.validate(input, {
+      abortEarly: false,
+    });
+    console.log(error);
+    // onSuccess();
   };
 
   const handleChange = (e) => {
@@ -24,6 +32,9 @@ export default function RegisterForm({ onSuccess }) {
             name="firstName"
             onChange={handleChange}
           />
+          {error.firstName ? (
+            <small className="text-red-500">{error.firstName}</small>
+          ) : null}
         </div>
         <div>
           <Input
