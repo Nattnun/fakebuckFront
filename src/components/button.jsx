@@ -21,3 +21,7 @@ export default function Button({ children, bg, color, width }) {
     <button className={`px-3 py-1.5 rounded-md ${classes}`}>{children}</button>
   );
 }
+
+//['bg-white','text-black','w-full'].join(' ') ===> "bg-white text-black w-full"
+//const createClass = (...classes) => classes.join(" ")
+//createClasses(bg? bgClass[bg]:'',color? colorClass[color]:'',width? widthClass[width]: '')
