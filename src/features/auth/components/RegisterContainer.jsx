@@ -12,7 +12,7 @@ export default function RegisterContainer() {
         Create new Account
       </Button>
       {open && (
-        <Modal title="Sing up" onClose={() => setOpen(false)}>
+        <Modal title="Sing up" onClose={() => setOpen(false)} width={40}>
           <RegisterForm onSuccess={() => setOpen(false)} />
         </Modal>
       )}
