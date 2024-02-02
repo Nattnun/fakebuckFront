@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Input from "../../../components/Input";
 import Button from "../../../components/Button";
 import validateRegister from "../validations/validate-register";
+import useAuth from "../../../hooks/use-auth";
 
 const initial = {
   firstName: "",
@@ -17,13 +18,24 @@ export default function RegisterForm({ onSuccess }) {
   const [input, setInput] = useState({ initial });
   const [error, setError] = useState({});
 
-  const handleFormSubmit = (e) => {
-    e.preventDefault();
-    const validateError = validateRegister(input);
-    if (validateError) {
-      return setError(validateError);
+  const { register } = useAuth();
+
+  const handleFormSubmit = async (e) => {
+    try {
+      e.preventDefault();
+      const validateError = validateRegister(input);
+      if (validateError) {
+        return setError(validateError);
+      }
+
+      await register(input);
+      onSuccess();
+    } catch (err) {
+      console.log(err);
+      if (err.response?.data.message === "EMAIL_MOBILE_IN_USE") {
+        setError({ emailOrMobile: "already in use" });
+      }
     }
-    onSuccess();
   };
 
   const handleChange = (e) => {
