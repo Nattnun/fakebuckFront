@@ -7,15 +7,17 @@ export default function RegisterContainer() {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="text-center">
-      <Button bg="green" color="white" onClick={() => setOpen(true)}>
-        Create new Account
-      </Button>
+    <>
+      <div className="text-center">
+        <Button bg="green" color="white" onClick={() => setOpen(true)}>
+          Create new Account
+        </Button>
+      </div>
       {open && (
         <Modal title="Sing up" onClose={() => setOpen(false)} width={40}>
           <RegisterForm onSuccess={() => setOpen(false)} />
         </Modal>
       )}
-    </div>
+    </>
   );
 }
