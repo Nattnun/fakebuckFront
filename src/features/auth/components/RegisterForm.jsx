@@ -3,6 +3,7 @@ import Input from "../../../components/Input";
 import Button from "../../../components/Button";
 import validateRegister from "../validations/validate-register";
 import useAuth from "../../../hooks/use-auth";
+import { toast } from "react-toastify";
 
 const initial = {
   firstName: "",
@@ -15,7 +16,7 @@ const initial = {
 // [{context,message,path,type}] ==> {firstName,LastName,...}
 
 export default function RegisterForm({ onSuccess }) {
-  const [input, setInput] = useState({ initial });
+  const [input, setInput] = useState(initial);
   const [error, setError] = useState({});
 
   const { register } = useAuth();
@@ -29,12 +30,14 @@ export default function RegisterForm({ onSuccess }) {
       }
 
       await register(input);
+      toast.success("register successfully");
       onSuccess();
     } catch (err) {
       console.log(err);
       if (err.response?.data.message === "EMAIL_MOBILE_IN_USE") {
-        setError({ emailOrMobile: "already in use" });
+        return setError({ emailOrMobile: "already in use" });
       }
+      toast.error("internal server error");
     }
   };
 
