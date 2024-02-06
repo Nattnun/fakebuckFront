@@ -1,11 +1,12 @@
 //config routing file
-import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import LoginPage from "../pages/LoginPage";
 import HomePage from "../pages/HomePage";
 import FriendPage from "../pages/FriendPage";
 import ProfilePage from "../pages/ProfilePage";
 import RedirectIfAuthenticated from "../features/auth/components/RedirectIfAuthenticated";
 import ProtectedRoute from "../features/auth/components/ProtectedRoute";
+import Container from "../layouts/Container";
 
 const router = createBrowserRouter([
   {
@@ -20,8 +21,7 @@ const router = createBrowserRouter([
     path: "/",
     element: (
       <ProtectedRoute>
-        <header>Main Header</header>
-        <Outlet />
+        <Container />
       </ProtectedRoute>
     ),
     children: [

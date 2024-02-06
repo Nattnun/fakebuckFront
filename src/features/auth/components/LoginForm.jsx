@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import Input from "../../../components/Input";
+import { useState } from "react";
 import Button from "../../../components/Button";
+import Input from "../../../components/Input";
 import validateLogin from "../validations/validate-login";
 import useAuth from "../../../hooks/use-auth";
 import { toast } from "react-toastify";
@@ -9,11 +9,8 @@ export default function LoginForm() {
   const [input, setInput] = useState({ emailOrMobile: "", password: "" });
   const [error, setError] = useState({});
 
-  const { login } = useAuth;
+  const { login } = useAuth();
 
-  const handleChangeInput = (e) => {
-    setInput({ ...input, [e.target.name]: e.target.value });
-  };
   const handleSubmitForm = async (e) => {
     try {
       e.preventDefault();
@@ -21,12 +18,17 @@ export default function LoginForm() {
       if (validationError) {
         return setError(validationError);
       }
-      console.log("input", input);
+
       await login(input);
       toast.success("login successfully");
     } catch (err) {
+      console.log(err);
       toast.error(err.response?.data.message);
     }
+  };
+
+  const handleChangeInput = (e) => {
+    setInput({ ...input, [e.target.name]: e.target.value });
   };
 
   return (
@@ -34,7 +36,7 @@ export default function LoginForm() {
       <div className="grid gap-4">
         <div>
           <Input
-            placeholder="Email Address or Moblie"
+            placeholder="Email address or mobile number"
             value={input.emailOrMobile}
             name="emailOrMobile"
             onChange={handleChangeInput}
@@ -50,9 +52,8 @@ export default function LoginForm() {
             errorMessage={error.password}
           />
         </div>
-
         <Button bg="blue" color="white">
-          Login
+          Log in
         </Button>
       </div>
     </form>
