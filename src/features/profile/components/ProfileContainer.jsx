@@ -1,7 +1,7 @@
 import Avatar from "../../../components/Avatar";
 import CoverImage from "./CoverImage";
 import ProfileAction from "./profileAction";
-import ProfileInfo from "./profileInfo";
+import ProfileInfo from "./ProfileInfo";
 import useProfile from "../hooks/use-profile";
 
 export default function profileContainer() {

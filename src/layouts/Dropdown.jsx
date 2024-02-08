@@ -35,26 +35,29 @@ export default function Dropdown() {
       {open && (
         <div className="absolute right-0 translate-y-1.5">
           <div className="w-96  bg-white shadow-[0_0_6px_rgb(0,0,0,0.2)] p-2 rounded-lg">
-            <Link to={`/profile/${id}`} onClick={() => setOpen(false)} />
-            <div
-              role="button"
-              className="flex gap-2 items-center hover:bg-gray-100 p-2 rounded-lg"
-            >
-              <Avatar size={3.75} src={profileImage} />
-              <div className="flex flex-col">
-                <span className="font-semibold">
-                  {firstName} {lastName}
-                </span>
-                <span className="text-sm text-gray-500">See your profile</span>
+            <Link to={`/profile/${id}`} onClick={() => setOpen(false)}>
+              <div
+                role="button"
+                className="flex gap-2 items-center hover:bg-gray-100 p-2 rounded-lg"
+              >
+                <Avatar size={3.75} src={profileImage} />
+                <div className="flex flex-col">
+                  <span className="font-semibold">
+                    {firstName} {lastName}
+                  </span>
+                  <span className="text-sm text-gray-500">
+                    See your profile
+                  </span>
+                </div>
               </div>
-            </div>
+            </Link>
             <hr className="my-2 border border-gray-300" />
             <div
+              onClick={logout}
               role="button"
               className="flex gap-2 items-center hover:bg-gray-100 p-2 rounded-lg"
             >
               <div
-                onClick={logout}
                 role="button"
                 className="bg-gray-300 w-9 h-9 rounded-full flex items-center justify-center"
               >

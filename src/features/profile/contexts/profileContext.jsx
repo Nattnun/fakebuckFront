@@ -1,41 +1,68 @@
 import { useState } from "react";
 import { createContext } from "react";
+import * as userApi from "../../../api/user";
+import { useEffect } from "react";
+import { useParams } from "react-router-dom";
+import * as relationshipApi from "../../../api/relationship";
+import { RELATIONSHIP_TO_AUTH_USER } from "../../../constants/index";
+import useAuth from "../../../hooks/use-auth";
 
 export const ProfileContext = createContext();
 
 export default function ProfileContextProvider({ children }) {
-  const [profileUser, setProfileUser] = useState({
-    id: 5,
-    firstName: "jim",
-    lastName: "Ryan",
-    profileImage:
-      "https://cdn.pixabay.com/photo/2014/11/30/14/11/cat-551554_1280.jpg",
-    coverImage:
-      "https://cdn.pixabay.com/photo/2016/03/28/10/05/kitten-1285341_1280.jpg",
-  });
+  const [profileUser, setProfileUser] = useState({});
+  const [profileUserFriends, setProfileUserFriends] = useState([]);
+  const [relationshipToAuthUser, setRelationshipToAuthUser] = useState("");
 
-  const [profileUserFriends, setProfileUserFriends] = useState([
-    {
-      id: 5,
-      firstName: "jim",
-      lastName: "Ryan",
-      profileImage:
-        "https://cdn.pixabay.com/photo/2014/04/13/20/49/cat-323262_1280.jpg",
-      coverImage:
-        "https://cdn.pixabay.com/photo/2016/03/28/10/05/kitten-1285341_1280.jpg",
-    },
-    {
-      id: 5,
-      firstName: "Bob",
-      lastName: "lee",
-      profileImage:
-        "https://cdn.pixabay.com/photo/2016/02/10/16/37/cat-1192026_1280.jpg",
-      coverImage:
-        "https://cdn.pixabay.com/photo/2016/03/28/10/05/kitten-1285341_1280.jpg",
-    },
-  ]);
+  const { userId } = useParams();
+  const { authUser } = useAuth();
 
-  const [relationshipToAuthUser, setRelationshipToAuthUser] = useState("ME");
+  const requestFriend = async () => {
+    await relationshipApi.requestFriend(userId);
+    setRelationshipToAuthUser(RELATIONSHIP_TO_AUTH_USER.RECEIVER);
+  };
+
+  const confirmRequest = async () => {
+    await relationshipApi.confirmRequest(userId);
+    setRelationshipToAuthUser(RELATIONSHIP_TO_AUTH_USER.FRIEND);
+    setProfileUserFriends((prev) => [...prev, profileUser]);
+  };
+
+  const rejectRequest = async () => {
+    await relationshipApi.rejectFriend(userId);
+    setRelationshipToAuthUser(RELATIONSHIP_TO_AUTH_USER.UNKNOWN);
+  };
+
+  const cancelRequest = async () => {
+    await relationshipApi.cancelRequest(userId);
+    setRelationshipToAuthUser(RELATIONSHIP_TO_AUTH_USER.UNKNOWN);
+  };
+
+  const unfriend = async () => {
+    await relationshipApi.unfriend(userId);
+    setRelationshipToAuthUser(RELATIONSHIP_TO_AUTH_USER.UNKNOWN);
+    setProfileUserFriends((prev) => prev.filter((el) => el.id !== authUser.id));
+  };
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const res = await userApi.getTargetUserProfile(userId);
+        setProfileUser(res.data.profileUser);
+        setProfileUserFriends(res.data.profileUserFriends);
+        setRelationshipToAuthUser(res.data.relationshipToAuthUser);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    fetchProfile();
+  }, [userId]);
+
+  useEffect(() => {
+    if (+userId === authUser.id) {
+      setProfileUser(authUser);
+    }
+  }, [authUser, userId]);
 
   return (
     <ProfileContext.Provider
@@ -46,6 +73,11 @@ export default function ProfileContextProvider({ children }) {
         setProfileUserFriends,
         relationshipToAuthUser,
         setRelationshipToAuthUser,
+        requestFriend,
+        confirmRequest,
+        rejectRequest,
+        cancelRequest,
+        unfriend,
       }}
     >
       {children}
